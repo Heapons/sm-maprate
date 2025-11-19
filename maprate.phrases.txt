@@ -117,16 +117,4 @@
 		"en"		"The plugin is still getting ratings, try rating the map later!"
 		"ru"		"Оценки ещё не загружены , попробуй оценить локацию позже!"
 	}
-	
-	//MMTF menu
-	"MMTF Map Rate"
-	{
-		"en"	"Rate map"
-		"ru"	"Оценить локацию"
-	}
-	"MMTF Check Map Rate"
-	{
-		"en"	"Check map rate"
-		"ru"	"Узнать оценки локации"
-	}
 }
