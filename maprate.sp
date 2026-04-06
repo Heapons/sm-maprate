@@ -138,9 +138,9 @@ Rating gCurrentRating;
 public Plugin myinfo =
 {
 	name = "Map Rating",
-	author = "saxyboi",
+	author = "saxyboi, Heapons",
 	description = "Plugin that allows to rate maps",
-	version = "1.0"
+	version = "1.0.1"
 };
 
 public void OnPluginStart()
