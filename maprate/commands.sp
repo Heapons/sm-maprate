@@ -70,7 +70,6 @@ Action ShowMapRates(int args)
 Action ResetData(int client, int args)
 {
 	gWorking = false;
-	
 	ReplyToCommand(client, "Clearing average map ratings...");
 	StringMapSnapshot snapshot = gMaps.Snapshot();
 	
@@ -109,6 +108,7 @@ Action ResetData(int client, int args)
 	ReplyToCommand(client, "Filling the memory with fresh data...");
 	RatingsInit();
 
+	gWorking = true;
 	ReplyToCommand(client, "Done!");
 
 	return Plugin_Handled;
