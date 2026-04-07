@@ -140,7 +140,7 @@ public Plugin myinfo =
 	name = "Map Rating",
 	author = "saxyboi, Heapons",
 	description = "Plugin that allows to rate maps",
-	version = "1.0.2"
+	version = "1.1"
 };
 
 public void OnPluginStart()
