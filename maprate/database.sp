@@ -101,6 +101,7 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 			rating.GetString("map", mapName, sizeof(mapName));
 
 		CPrintToChat(client, "%t %t", "Tag", "Success Map Rate", mapName, gRatePhrases[gPlayerCurrentRate[client]], client);
+		CallForwardOnPlayerMapRate(client, newRate, oldRate, mapName);
 	}
 	else
 	{

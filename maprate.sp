@@ -24,7 +24,7 @@ Database gDatabase;
 StringMap gMaps;
 
 bool gWorking;
-GlobalForward gOnSuccessInit;
+GlobalForward gOnSuccessInit, gOnPlayerMapRate;
 
 ArrayList gCurrentRates[RateType];
 RateType gPlayerCurrentRate[MAXPLAYERS] = { None, ... };

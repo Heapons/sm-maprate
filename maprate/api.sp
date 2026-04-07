@@ -4,8 +4,10 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("MapRate_GetAverage", NativeGetAverage);
 	CreateNative("MapRate_SetDisplayName", NativeSetDisplayName);
 	CreateNative("MapRate_IsWorking", NativeIsWorking);
+	CreateNative("MapRate_GetPlayerCurrentRate", NativeGetPlayerCurrentRate);
 
-	gOnSuccessInit = CreateGlobalForward("MapRate_OnSuccessInit", ET_Ignore);
+	gOnSuccessInit 	 = CreateGlobalForward("MapRate_OnSuccessInit", ET_Ignore);
+	gOnPlayerMapRate = CreateGlobalForward("MapRate_OnPlayerMapRate", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_String);
 
 	RegPluginLibrary("maprate");
 
@@ -50,4 +52,26 @@ int NativeSetDisplayName(Handle plugin, int numParams)
 any NativeIsWorking(Handle plugin, int numParams)
 {
 	return gWorking;
+}
+
+any NativeGetPlayerCurrentRate(Handle plugin, int numParams)
+{
+	return gPlayerCurrentRate[GetNativeCell(1)];
+}
+
+void CallForwardOnPlayerMapRate(int client, RateType rate, RateType oldRate, const char[] display)
+{
+	if(!gOnPlayerMapRate.FunctionCount)
+		return;
+
+	Call_StartForward(gOnPlayerMapRate);
+
+	Call_PushCell(client);
+	Call_PushCell(rate);
+	Call_PushCell(oldRate);
+	Call_PushString(display);
+
+	int finish = Call_Finish();
+	if(finish)
+		LogError("CallForwardOnPlayerMapRate() :: Something wrong happened while sending forward MapRate_OnPlayerMapRate (error code: %i)", finish);
 }

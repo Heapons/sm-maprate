@@ -3,6 +3,16 @@
 #endif
 #define _maprate_included_
 
+enum RateType
+{
+	None = 0,
+	Terrible,
+	Poor,
+	Average,
+	Good,
+	Excellent
+}
+
 /**
  * Open map rating menu for client
  * @param client      Client's index
@@ -36,6 +46,23 @@ native bool MapRate_IsWorking();
  */
 forward void MapRate_OnSuccessInit();
 
+/**
+ * Get player's current map rate
+ * @param client  Player index
+ * @return  Current map rate (None - player haven't rate map yet or not in the server)
+ * @error  Invalid player index
+ */
+native RateType MapRate_GetPlayerCurrentRate(int client);
+
+/**
+ * Forward, called after a player successfully rated a map
+ * @param client   Player index
+ * @param rate     Player's map rate
+ * @param oldRate  Player's old rate
+ * @param display  The displayed name of the rated map
+ */
+forward void MapRate_OnPlayerMapRate(int client, RateType rate, RateType oldRate, const char[] display);
+
 public SharedPlugin __pl_maprate = 
 {
 	name = "maprate",
@@ -55,5 +82,6 @@ public void __pl_maprate_SetNTVOptional()
 	MarkNativeAsOptional("MapRate_GetAverage");
 	MarkNativeAsOptional("MapRate_SetDisplayName");
 	MarkNativeAsOptional("MapRate_IsWorking");
+	MarkNativeAsOptional("MapRate_GetPlayerCurrentRate");
 }
 #endif
