@@ -46,8 +46,9 @@ public void UMC_OnNextmapSet(Handle kv, const char[] map, const char[] group, co
 	{
 		if(!IsClientInGame(client) || IsFakeClient(client))
 			continue;
-			
-		MapRate_AskToRate(client);
+		
+		if(MapRate_GetPlayerCurrentRate(client) == None)
+			MapRate_AskToRate(client);
 	}
 }
 ```
