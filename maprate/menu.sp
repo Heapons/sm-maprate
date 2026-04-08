@@ -1,4 +1,4 @@
-void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREVER)
+void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREVER, DataPack cb = view_as<DataPack>(INVALID_HANDLE))
 {
 	if(!gWorking)
 	{
@@ -6,8 +6,6 @@ void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREV
 		
 		return;
 	}
-	//if(gPlayerCurrentRate[client] == None)
-	//	gPlayerCurrentRate[client] = GetClientMapRate(client);
 
 	char mapName[MAX_MAP_NAME_LENGTH];
 	if(!gCurrentRating.GetDisplayName(mapName, sizeof(mapName)))
@@ -60,6 +58,14 @@ void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREV
 		menu.AddItem("0", buffer);
 	}
 	
+	if(cb != INVALID_HANDLE)
+	{
+		FormatEx(buffer, sizeof(buffer), "%i", view_as<int>(cb));
+		menu.AddItem(buffer, "cb", ITEMDRAW_NOTEXT);
+
+		menu.ExitBackButton = true;
+	}
+	
 	menu.ExitButton = true;
 	menu.Display(client, display);
 }
@@ -76,11 +82,26 @@ int OnRateMenuAction(Menu menu, MenuAction action, int param1, int param2)
 			RateType rate = view_as<RateType>(StringToInt(info));
 
 			if(rate != None)
+			{
 				gCurrentRating.Rate(param1, rate);
+				InitCallbackFromDataPack(GetDataPackFromMenu(menu));
+			}
 			else
-				RateMenu(param1, true);
+				RateMenu(param1, true, _, GetDataPackFromMenu(menu));
 		}
-		case MenuAction_End: delete menu;
+		case MenuAction_Cancel:
+		{
+			if(param2 == MenuCancel_ExitBack)
+				InitCallbackFromDataPack(GetDataPackFromMenu(menu));
+		}
+		case MenuAction_End: 
+		{
+			DataPack cb = GetDataPackFromMenu(menu);
+			if(cb != INVALID_HANDLE)
+				delete cb;
+
+			delete menu;
+		}
 	}
 
 	return 0;

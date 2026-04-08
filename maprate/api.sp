@@ -16,7 +16,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 int NativeAskToRate(Handle plugin, int numParams)
 {
-	RateMenu(GetNativeCell(1), GetNativeCell(2), GetNativeCell(3));
+	RateMenu(GetNativeCell(1), GetNativeCell(2), GetNativeCell(3), CreateDataPackForCallback(plugin, GetNativeFunction(4), GetNativeCell(1)));
 	
 	return 0;
 }

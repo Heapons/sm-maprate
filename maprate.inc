@@ -14,12 +14,20 @@ enum RateType
 }
 
 /**
- * Open map rating menu for client
- * @param client      Client's index
- * @param forceRate   Forcing client rate a map even when they've already rated it
- * @param display     How long will the menu be displayed (0 - forever)  
+ *	Called when player closed map rate menu
+ *	@param client  Player index
+ *	@noreturn
  */
-native void MapRate_AskToRate(int client, bool forceRate = false, int display = 0);
+typedef MapRate_MenuOnExitBack = function void (int client);
+
+/**
+ * Open map rating menu for client
+ * @param client      	  	  Player index
+ * @param forceRate   	  	  Forcing client rate a map even when they've already rated it
+ * @param display     	  	  How long will the menu be displayed (0 - forever)  
+ * @param onExitBackCallback  Callback func that will be activated after the player presses "Back" in the menu (this option appears if the function is specified in the parameter)
+ */
+native void MapRate_AskToRate(int client, bool forceRate = false, int display = 0, MapRate_MenuOnExitBack onExitBackCallback = INVALID_FUNCTION);
 
 /**
  * Get the average of all ratings for a specified map

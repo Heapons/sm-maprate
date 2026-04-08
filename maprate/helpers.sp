@@ -74,3 +74,40 @@ stock bool IsValidClient(int client)
 
 	return true;
 }
+
+DataPack CreateDataPackForCallback(Handle plugin, Function callback, int data = 0)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(plugin);
+	pack.WriteFunction(callback);
+	pack.WriteCell(data);
+
+	return pack;
+}
+
+DataPack GetDataPackFromMenu(Menu menu)
+{
+	char address[2][32];
+	menu.GetItem(menu.ItemCount - 1, address[0], sizeof(address[]), _, address[1], sizeof(address[]));
+
+	return !strcmp(address[1], "cb") ? view_as<DataPack>(StringToInt(address[0])) : view_as<DataPack>(INVALID_HANDLE);
+}
+
+void InitCallbackFromDataPack(DataPack pack)
+{
+	if(pack == INVALID_HANDLE)
+		return;
+
+	pack.Reset();
+	Handle plugin = pack.ReadCell();
+	Function cb = pack.ReadFunction();
+	int data = pack.ReadCell();
+
+	Call_StartFunction(plugin, cb);
+
+	Call_PushCell(data);
+
+	int finish = Call_Finish();
+	if(finish)
+		LogError("InitCallbackFromDataPack() :: Something wrong happened while calling a function (error code: %i)", finish);
+}
