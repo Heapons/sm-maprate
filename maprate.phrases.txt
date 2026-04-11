@@ -87,7 +87,7 @@
 		"#format" 	"{1:s}"
 		
 		"en"		"Rating map {1}\n \nBe careful while vote!\nThe future of the map on the server depends on it!\n "
-		"ru"		"Оценка локации {1}\n \nГолосуй с умом!\nОт этого зависит будущее карты на сервере!\n "
+		"ru"		"Оценка карты {1}\n \nГолосуй с умом!\nОт этого зависит будущее карты на сервере!\n "
 	}
 	
 	"Menu Item Client Rate"
@@ -101,7 +101,7 @@
 	"Menu Item Rate Map"
 	{
 		"en" 		"Rate map"
-		"ru"		"Оценить локацию"
+		"ru"		"Оценить карту"
 	}
 	
 	// notifs
@@ -115,7 +115,7 @@
 	"Plugin Still Getting Data"
 	{
 		"en"		"The plugin is still getting ratings, try rating the map later!"
-		"ru"		"Оценки ещё не загружены , попробуй оценить локацию позже!"
+		"ru"		"Оценки ещё не загружены, попробуй оценить карту позже!"
 	}
 	"Player Is On Rating Cooldown"
 	{
