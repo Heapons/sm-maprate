@@ -23,6 +23,7 @@ stock const char gRatePhrases[RateType][] = {"None", "Terrible", "Poor", "Averag
 Database gDatabase;
 StringMap gMaps;
 
+ConVar gShowRatesAfterRating;
 bool gWorking;
 GlobalForward gOnSuccessInit, gOnPlayerMapRate;
 
@@ -90,7 +91,7 @@ methodmap Rating < StringMap
 		}
 	}
 
-	public void Rate(int client, RateType rate)
+	public void Rate(int client, RateType rate, int data = 0)
 	{
 		if(rate == None)
 			return;
@@ -100,6 +101,7 @@ methodmap Rating < StringMap
 		this.GetString("map", map, sizeof(map));
 
 		DataPack pack = new DataPack();
+		pack.WriteCell(data);
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteString(auth);
 		pack.WriteCell(view_as<int>(rate));
@@ -130,6 +132,7 @@ methodmap Rating < StringMap
 Rating gCurrentRating;
 
 #include "maprate/database.sp"
+#include "maprate/convars.sp"
 #include "maprate/menu.sp"
 #include "maprate/commands.sp"
 #include "maprate/api.sp"
@@ -151,6 +154,7 @@ public void OnPluginStart()
 		gCurrentRates[rate] = new ArrayList(32);
 
 	DatabaseInit();
+	ConVarsInit();
 	CommandsInit();
 
 	LoadTranslations("maprate.phrases");

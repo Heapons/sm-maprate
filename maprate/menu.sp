@@ -81,13 +81,11 @@ int OnRateMenuAction(Menu menu, MenuAction action, int param1, int param2)
 
 			RateType rate = view_as<RateType>(StringToInt(info));
 
+			DataPack cb = view_as<DataPack>(CloneHandle(GetDataPackFromMenu(menu)));
 			if(rate != None)
-			{
-				gCurrentRating.Rate(param1, rate);
-				InitCallbackFromDataPack(GetDataPackFromMenu(menu));
-			}
+				gCurrentRating.Rate(param1, rate, cb);
 			else
-				RateMenu(param1, true, _, GetDataPackFromMenu(menu));
+				RateMenu(param1, true, _, cb);
 		}
 		case MenuAction_Cancel:
 		{

@@ -65,15 +65,20 @@ void OnMapRatesQuery(Database db, DBResultSet results, const char[] error, Ratin
 
 void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataPack pack)
 {
+	pack.Reset();
+	DataPack cb = view_as<DataPack>(pack.ReadCell());
+
 	if(error[0])
 	{
 		LogError("OnClientRate() :: %s", error);
+
+		if(cb != INVALID_HANDLE)
+			delete cb;
 
 		delete pack;
 		return;
 	}
 
-	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	
 	char auth[32];
@@ -95,13 +100,21 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 		}
 		
 		gCurrentRates[gPlayerCurrentRate[client]].PushString(auth);
+
+		if(!gShowRatesAfterRating.BoolValue)
+		{
+			if(cb != INVALID_HANDLE)
+				delete cb;
+		}
+		else
+			RateMenu(client, _, _, cb);
 		
 		char mapName[MAX_MAP_NAME_LENGTH];
 		if(!rating.GetDisplayName(mapName, sizeof(mapName)))
 			rating.GetString("map", mapName, sizeof(mapName));
 
-		CPrintToChat(client, "%t %t", "Tag", "Success Map Rate", mapName, gRatePhrases[gPlayerCurrentRate[client]], client);
 		CallForwardOnPlayerMapRate(client, newRate, oldRate, mapName);
+		CPrintToChat(client, "%t %t", "Tag", "Success Map Rate", mapName, gRatePhrases[gPlayerCurrentRate[client]], client);
 	}
 	else
 	{
@@ -111,6 +124,9 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 			if(index != -1)
 				gCurrentRates[rate].Erase(index);
 		}
+		
+		if(cb != INVALID_HANDLE)
+			delete cb;
 	}
 
 	rating.Average = GetCurrentRatesAverage();
