@@ -156,7 +156,7 @@ methodmap Rating < StringMap
 			FormatEx(query, sizeof(query), "INSERT INTO `map_ratings` (`map`, `steamid`, `rating`, `rated`) VALUES ('%s', '%s', %i, NOW());", map, auth, view_as<int>(rate));
 	
 		gDatabase.Query(OnClientMapRate, query, pack);
-		
+
 		return true;
 	}
 
@@ -187,7 +187,7 @@ public Plugin myinfo =
 	name = "Map Rating",
 	author = "54x, Heapons",
 	description = "Plugin that allows to rate maps",
-	version = "1.1.1"
+	version = "1.2"
 };
 
 public void OnPluginStart()
