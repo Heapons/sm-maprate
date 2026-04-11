@@ -98,9 +98,9 @@ Action ResetData(int client, int args)
 	for(RateType rate = Excellent; rate > None; rate--)
 		gCurrentRates[rate].Clear();
 
-	ReplyToCommand(client, "Clearing current player ratings...");
+	ReplyToCommand(client, "Clearing players data...");
 	for(int i = 1; i <= MaxClients; i++)
-		gPlayerCurrentRate[i] = None;
+		gPlayer[i].Clear();
 
 	ReplyToCommand(client, "Clearing the link to the current map\'s average rating...");
 	gCurrentRating = INVALID_RATING;

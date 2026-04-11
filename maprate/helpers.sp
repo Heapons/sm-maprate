@@ -111,3 +111,19 @@ void InitCallbackFromDataPack(DataPack pack)
 	if(finish)
 		LogError("InitCallbackFromDataPack() :: Something wrong happened while calling a function (error code: %i)", finish);
 }
+
+Action OnCooldownThink(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!client)
+		return Plugin_Stop;
+
+	if(!gPlayer[client].Cooldown)
+	{
+		gPlayer[client].Timer = null;
+		return Plugin_Stop;
+	}
+	
+	gPlayer[client].Cooldown--;
+	return Plugin_Continue;
+}

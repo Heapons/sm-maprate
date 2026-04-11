@@ -59,7 +59,7 @@ void OnMapRatesQuery(Database db, DBResultSet results, const char[] error, Ratin
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidClient(i) && !IsFakeClient(i))
-			gPlayerCurrentRate[i] = GetClientMapRate(i);
+			gPlayer[i].CurrentRate = GetClientMapRate(i);
 	}
 }
 
@@ -89,8 +89,8 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 
 	if(client)
 	{
-		RateType oldRate = gPlayerCurrentRate[client];
-		gPlayerCurrentRate[client] = newRate;
+		RateType oldRate = gPlayer[client].CurrentRate;
+		gPlayer[client].CurrentRate = newRate;
 	
 		if(oldRate != None)
 		{
@@ -99,7 +99,7 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 				gCurrentRates[oldRate].Erase(index);
 		}
 		
-		gCurrentRates[gPlayerCurrentRate[client]].PushString(auth);
+		gCurrentRates[gPlayer[client].CurrentRate].PushString(auth);
 
 		if(!gShowRatesAfterRating.BoolValue)
 		{
@@ -114,7 +114,7 @@ void OnClientMapRate(Database db, DBResultSet results, const char[] error, DataP
 			rating.GetString("map", mapName, sizeof(mapName));
 
 		CallForwardOnPlayerMapRate(client, newRate, oldRate, mapName);
-		CPrintToChat(client, "%t %t", "Tag", "Success Map Rate", mapName, gRatePhrases[gPlayerCurrentRate[client]], client);
+		CPrintToChat(client, "%t %t", "Tag", "Success Map Rate", mapName, gRatePhrases[gPlayer[client].CurrentRate], client);
 	}
 	else
 	{

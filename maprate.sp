@@ -23,12 +23,46 @@ stock const char gRatePhrases[RateType][] = {"None", "Terrible", "Poor", "Averag
 Database gDatabase;
 StringMap gMaps;
 
-ConVar gShowRatesAfterRating;
+ConVar gShowRatesAfterRating, gNextRatingCooldown;
 bool gWorking;
 GlobalForward gOnSuccessInit, gOnPlayerMapRate;
 
 ArrayList gCurrentRates[RateType];
-RateType gPlayerCurrentRate[MAXPLAYERS] = { None, ... };
+
+enum struct PlayerData
+{
+	RateType CurrentRate;
+	
+	int Cooldown;
+	Handle Timer;
+
+	void StartTimer(int client, int cooldown)
+	{
+		if(this.Timer || cooldown <= 0)
+			return;
+
+		this.Cooldown = cooldown - 1;
+		CreateTimer(1.0, OnCooldownThink, GetClientUserId(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	}
+
+	void StopTimer()
+	{
+		if(!this.Timer)
+			return;
+
+		KillTimer(this.Timer);
+		
+		this.Timer = null;
+		this.Cooldown = 0;
+	}
+
+	void Clear()
+	{
+		this.CurrentRate = None;
+		this.StopTimer();
+	}
+}
+PlayerData gPlayer[MAXPLAYERS];
 
 methodmap Rating < StringMap
 {
@@ -91,11 +125,19 @@ methodmap Rating < StringMap
 		}
 	}
 
-	public void Rate(int client, RateType rate, int data = 0)
+	public bool Rate(int client, RateType rate, int data = 0)
 	{
 		if(rate == None)
-			return;
-		
+			return false;
+
+		if(gPlayer[client].Cooldown)
+		{
+			CPrintToChat(client, "%T %T", "Tag", client, "Player Is On Rating Cooldown", client, gPlayer[client].Cooldown);
+			return false;			
+		}
+		else
+			gPlayer[client].StartTimer(client, gNextRatingCooldown.IntValue);
+
 		char auth[32], map[MAX_MAP_NAME_LENGTH];
 		GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
 		this.GetString("map", map, sizeof(map));
@@ -108,12 +150,14 @@ methodmap Rating < StringMap
 		pack.WriteCell(this);
 
 		char query[MAX_QUERY_LENGTH];
-		if(gPlayerCurrentRate[client] != None)
+		if(gPlayer[client].CurrentRate != None)
 			FormatEx(query, sizeof(query), "UPDATE `map_ratings` SET `rating` = %i, `rated` = NOW() WHERE `map` = '%s' AND `steamid` = '%s';", view_as<int>(rate), map, auth);
 		else
 			FormatEx(query, sizeof(query), "INSERT INTO `map_ratings` (`map`, `steamid`, `rating`, `rated`) VALUES ('%s', '%s', %i, NOW());", map, auth, view_as<int>(rate));
 	
 		gDatabase.Query(OnClientMapRate, query, pack);
+		
+		return true;
 	}
 
 	public void PrintInfo()
@@ -177,12 +221,12 @@ public void OnMapInit(const char[] mapName)
 
 public void OnClientPostAdminCheck(int client)
 {
-	gPlayerCurrentRate[client] = GetClientMapRate(client);
+	gPlayer[client].CurrentRate = GetClientMapRate(client);
 }
 
 public void OnClientDisconnect_Post(int client)
 {
-	gPlayerCurrentRate[client] = None;
+	gPlayer[client].Clear();
 }
 
 void RatingsInit()

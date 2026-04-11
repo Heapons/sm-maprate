@@ -11,7 +11,7 @@ void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREV
 	if(!gCurrentRating.GetDisplayName(mapName, sizeof(mapName)))
 		GetCurrentMap(mapName, sizeof(mapName));
 
-	bool rated = gPlayerCurrentRate[client] != None && !changeRate;
+	bool rated = gPlayer[client].CurrentRate != None && !changeRate;
 
 	Menu menu = new Menu(OnRateMenuAction);
 	
@@ -52,7 +52,7 @@ void RateMenu(int client, bool changeRate = false, int display = MENU_TIME_FOREV
 
 	if(rated)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Menu Item Client Rate", client, gRatePhrases[gPlayerCurrentRate[client]], client);
+		FormatEx(buffer, sizeof(buffer), "%T", "Menu Item Client Rate", client, gRatePhrases[gPlayer[client].CurrentRate], client);
 		menu.AddItem("--", buffer, ITEMDRAW_DISABLED);
 		FormatEx(buffer, sizeof(buffer), "%T", "Menu Item Rate Map", client);
 		menu.AddItem("0", buffer);
@@ -81,9 +81,15 @@ int OnRateMenuAction(Menu menu, MenuAction action, int param1, int param2)
 
 			RateType rate = view_as<RateType>(StringToInt(info));
 
-			DataPack cb = view_as<DataPack>(CloneHandle(GetDataPackFromMenu(menu)));
+			DataPack cb = GetDataPackFromMenu(menu);
+			if(cb != INVALID_HANDLE)
+				cb = view_as<DataPack>(CloneHandle(cb))
+			
 			if(rate != None)
-				gCurrentRating.Rate(param1, rate, cb);
+			{
+				if(!gCurrentRating.Rate(param1, rate, cb) && cb != INVALID_HANDLE)
+					delete cb;
+			}
 			else
 				RateMenu(param1, true, _, cb);
 		}

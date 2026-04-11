@@ -56,7 +56,7 @@ any NativeIsWorking(Handle plugin, int numParams)
 
 any NativeGetPlayerCurrentRate(Handle plugin, int numParams)
 {
-	return gPlayerCurrentRate[GetNativeCell(1)];
+	return gPlayer[GetNativeCell(1)].CurrentRate;
 }
 
 void CallForwardOnPlayerMapRate(int client, RateType rate, RateType oldRate, const char[] display)
