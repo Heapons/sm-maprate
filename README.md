@@ -24,13 +24,18 @@ A SourceMod plugin that allows to rate a map and synchronize player ratings with
         }
     ```
 - Restart the server
-## Commands
-| Name | Admin Flag | Description |
+## Commands & ConVars
+| Command | Admin Flag | Description |
 |-|-|-|
-| `sm_maprate`, `sm_maprating` | None | Opens the menu for rating the current map |
+| `sm_maprate` `sm_maprating` | None | Opens the menu for rating the current map |
 | `sm_forcemaprate` | `g` (`ADMFLAG_CHANGEMAP`) | Opens the menu for rating the current map for all players |
 | `sm_maprate_reset` | `n` (`ADMFLAG_CHEATS`) | Clear the plugin's memory and retrieve the data again |
 | `sm_maprates` | Server console only | Display all map ratings in the console |
+
+| ConVar | Default Value | Description |
+|-|-|-|
+| `sm_maprate_show_rates_after_rating` | 1 | Show the map rates to the player after they have rated it |
+| `sm_maprate_rating_cooldown` | 5 | After how many seconds player can rate the map again (0 - disable it) |
 ## Dependencies
 - **SourceMod 1.11 and newer to compile** *(release builds have been compiled on Sourcemod 1.12.0.7212)*
 - **[MoreColors](https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc)** *(compile)*
