@@ -47,7 +47,7 @@ A SourceMod plugin that allows to rate a map and synchronize player ratings with
 
 public void UMC_OnNextmapSet(Handle kv, const char[] map, const char[] group, const char[] display)
 {
-	for(int client = 1; client < MaxClients; client++)
+	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(!IsClientInGame(client) || IsFakeClient(client))
 			continue;
